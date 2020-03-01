@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DEMO DIEU KHIEN ON OFF QUA MQTT</title>
+</head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+
+<body>
+	<h1>This is a Heading</h1>
+	<p id="val"> This is a paragraph.</p>
+
+	<script>
+ 		var Hostname = "soldier.cloudmqtt.com";
+ 		var PortWedSocket = 38373;
+ 		var ClientId = "ESP";
+ 		ClientId += new Date().getUTCMilliseconds();;
+ 		var Username = "nbohtscr";
+ 		var Password = "R-axsHbe5Tl9";
+ 		var Subscription = "KN";
+ 		mqttClient = new Paho.MQTT.Client(Hostname, PortWedSocket, ClientId);
+ 		mqttClient.onMessageArrived = MessageArrived;
+ 		mqttClient.onConnectionLost = ConnectionLost;
+ 		Connect();
+     	function Connect() {
+            mqttClient.connect({
+                onSuccess: Connected,
+                onFailure: ConnectionFailed,
+                keepAliveInterval: 60,
+                userName: Username,
+                useSSL: true,
+                password: Password
+            });
+        }
+ 		  function Connected() {
+            console.log("Connected");
+            mqttClient.subscribe(Subscription);
+            mqttClient.subscribe("abc");
+
+            alert('Kết nối tới sever thành công')
+
+        }
+
+ 		function ConnectionFailed(res){
+ 		 		console.log("Kết nối bị lỗi:" + res.errorMessage);
+ 		}
+ 		function ConnectionLost(res){
+ 		 		if(res.errorCode != 0)
+ 		 		{
+ 		 		 		console.log("kết nối kém:" + res.errorMessage);
+ 		 		 		Connect();
+ 		 		}
+ 		}
+ 		var temp = document.getElementById('stt');
+ 		function MessageArrived(message){
+ 		 		$("#val").text(message.destinationName + " :" + message.payloadString);
+ 		}
+	</script>
+
+	<img src ="D:/CÔNG TRÌNH/ảnh/anh/20170924_173054.jpg" width="100" height="60">
+
+	<!-- nút nhấn on bơm số 1 -->
+	<button id="ON_BƠM_1" style="
+							color: white; 
+							height: 50px; 
+							width: 100px;
+							background: green; 
+							font-size: 25px;
+							position: fixed;
+							left: 300px;
+							top: 200px
+							">
+							<U>ON</U>
+
+	</button>
+
+	<!-- nút nhấn off bơm số 1 -->
+	<button id="ON_BƠM_1" style="
+							color: white; 
+							height: 50px; 
+							width: 100px;
+							background: red; 
+							font-size: 25px;
+							position: fixed;
+							left: 400px;
+							top: 200px
+							">
+							<U>OFF</U>
+	</button><br/>
+	<script>
+
+		$("#ON_BƠM_1").click(function()
+ 		 		{
+ 		 		 		var message = new Paho.MQTT.Message("ON_BƠM_1");
+ 		 		 		message.destinationName = "Bơm";
+ 		 		 		mqttClient.send(message);
+ 		 		});
+		$("#OFF_BƠM_1").click(function()
+ 		 		{
+ 		 		 		var message = new Paho.MQTT.Message("OFF_BƠM_1");
+ 		 		 		message.destinationName = "Bơm";
+ 		 		 		mqttClient.send(message);
+ 		 		});
+	</script>
+
+	<!-- nút nhấn off bơm số 1 -->
+	<label for="name">Timer:</label>
+	<input type="text" id ="name" name="fname" size="4" maxlength="5" placeholder="Thời gian" pattern="[0-9]{10}" value="">
+	<input type="submit" name="submit" value="đăng nhập">
+	<input type="reset" name="Reset" id="name" value="Reset"><br/>
+	<!-- nút nhấn off bơm số 1 -->
+	<label for="fname">Counter:</label>
+	<input type="checkbox" id="fname" name="fname" size="3" maxlength="5"><br/><br/>
+
+	<label for="modeau"> AUTO</label>
+	<input type="radio"  name="mode" id="modeau"><br/>
+	<label for="modemn"> MANUAL</label>
+	<input type="radio"  name="mode" id="modemn"><br/>
+
+
+</body>
+</html>
